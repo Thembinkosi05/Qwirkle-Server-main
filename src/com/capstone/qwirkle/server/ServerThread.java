@@ -1,6 +1,6 @@
 package com.capstone.qwirkle.server;
 
-import com.capstone.qwirkle.ClientConnector;
+import com.capstone.qwirkle.ClientHandler;
 import com.capstone.qwirkle.Displayer;
 import com.capstone.qwirkle.PubSubBroker;
 
@@ -16,7 +16,7 @@ public class ServerThread extends Thread {
     private ServerSocket server;
     private Socket connection;
     private int id = 1;
-    private static Map<String, ClientConnector> connectedClients;
+    private static Map<String, ClientHandler> connectedClients;
 
     private Displayer<String> displayer;
     private Runnable onConnected;
@@ -29,7 +29,7 @@ public class ServerThread extends Thread {
         connectedClients = new ConcurrentHashMap<>();
     }
 
-    public static Map<String, ClientConnector> getConnectedClients() {
+    public static Map<String, ClientHandler> getConnectedClients() {
         return connectedClients;
     }
 
@@ -87,7 +87,7 @@ public class ServerThread extends Thread {
         display("Waiting for connection...");
 
         connection = server.accept();
-        ClientConnector connector = new ClientConnector(connection, ++id, this::display);
+        ClientHandler connector = new ClientHandler(connection, ++id, this::display);
         connector.setOnConnected(onConnected);
         connector.setOnDisconnected(onDisconnected);
         new Thread(connector).start();

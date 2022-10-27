@@ -9,19 +9,19 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClientConnector implements Runnable {
+public class ClientHandler implements Runnable {
     private final PubSubBroker broker = PubSubBroker.getInstance();
     private Socket socket;
     private String id;
     private Displayer<String> displayer;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-    private Map<String , ClientConnector> clients;
+    private Map<String , ClientHandler> clients;
 
     private Runnable onConnected;
     private Runnable onDisconnected;
 
-    public ClientConnector(Socket client, int id, Displayer<String> displayer) {
+    public ClientHandler(Socket client, int id, Displayer<String> displayer) {
         socket = client;
         this.id = String.valueOf(id);
         clients = ServerThread.getConnectedClients();
@@ -88,7 +88,7 @@ public class ClientConnector implements Runnable {
                     sendMessage(message);
 
                     message.put(id, "Client ID#: " + id + " is online.");
-                    for (Map.Entry<String, ClientConnector> curClient : clients.entrySet()) {
+                    for (Map.Entry<String, ClientHandler> curClient : clients.entrySet()) {
                         curClient.getValue().sendMessage(message);
                         display("Message to #" + curClient.getKey() + ": " + message);
                     }
@@ -128,7 +128,7 @@ public class ClientConnector implements Runnable {
                     break;
                 case "broadcast":
                     String message2 = (String) params1.get(String.valueOf(id));
-                    for (Map.Entry<String, ClientConnector> curClient : clients.entrySet()) {
+                    for (Map.Entry<String, ClientHandler> curClient : clients.entrySet()) {
                         curClient.getValue().sendMessage(message2);
                         display("Client #" + publisher + " says: " + message2);
                     }
