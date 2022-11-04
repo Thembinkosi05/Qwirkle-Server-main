@@ -2,10 +2,10 @@ package com.capstone.qwirkle.messages.server;
 
 import com.capstone.qwirkle.messages.Message;
 
-public class JoinedGame extends Message {
-    private static final long serialVersionUID = 40L;
+public class Joined extends Message {
+    private static final long serialVersionUID = 104L;
     private String player_username;
-    public JoinedGame(String player_username)
+    public Joined(String player_username)
     {
         this.player_username = player_username;
     }

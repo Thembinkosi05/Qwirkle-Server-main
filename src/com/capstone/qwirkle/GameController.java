@@ -11,11 +11,10 @@ import java.util.Random;
 
 public class GameController {
 
-
     private ArrayList<Tile> bag = new ArrayList<>();   //108 initial number of tile
     private ArrayList<Tile> board = new ArrayList<>();
 
-    private ArrayList<Player> players = new ArrayList<>();
+    private ArrayList<PlayerClient> players = new ArrayList<>();
     private Integer gameID;  //different lobbies
     public boolean isReady;
     public int playerTotal = 0;
@@ -28,8 +27,12 @@ public class GameController {
         isReady=false;
     }
 
-    public void setGameID(int gamesIndex){
-        gameID=gamesIndex;
+    public static void addlobby(int i) {
+
+    }
+
+    public void setGameID(int gamesID){
+        gameID=gamesID;
     }
 
     public void generatePieces() {
@@ -69,4 +72,6 @@ public class GameController {
     public static void addClient(){
 
     }
+
+
 }

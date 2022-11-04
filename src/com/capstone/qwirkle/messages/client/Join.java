@@ -14,6 +14,6 @@ public class Join extends Message<PlayerClient> {
 
     @Override
     public void applyLogic(PlayerClient playerClient) {
-        GameController.addClient(playerClient);
+       // GameController.addClient(playerClient);
     }
 }

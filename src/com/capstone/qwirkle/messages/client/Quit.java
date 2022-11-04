@@ -5,7 +5,7 @@ import com.capstone.qwirkle.PlayerClient;
 import com.capstone.qwirkle.messages.Message;
 
 public class Quit extends Message<PlayerClient> {
-    private static final long serialVersionUID = 80L;
+    private static final long serialVersionUID = 3L;
 
     @Override
     public void applyLogic(PlayerClient playerClient)

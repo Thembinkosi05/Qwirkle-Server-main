@@ -30,12 +30,12 @@ public class PlayerClient {
     String username;
 
 
-    public PlayerClient(Socket socket) {
+    public PlayerClient(Socket socket,int Username) {
         this.socket=socket;
         readThread=new ReadingThread();
         readThread.start();
-        GameController.addClient(this);
-        System.out.println(new JoinedGame(username));
+       // GameController.addClient(this);
+        System.out.println(new Joined(username));
     }
 
 
