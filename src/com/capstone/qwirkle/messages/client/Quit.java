@@ -10,7 +10,7 @@ public class Quit extends Message<PlayerClient> {
     @Override
     public void applyLogic(PlayerClient playerClient)
     {
-        GameController.leaveGame(playerClient);
+       //GameController.leaveGame(playerClient);
     }
     @Override
     public String toString() {

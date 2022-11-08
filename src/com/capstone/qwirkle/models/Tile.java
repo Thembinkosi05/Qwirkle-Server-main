@@ -1,62 +1,98 @@
 package com.capstone.qwirkle.models;
 
-public class Tile {
-    public Shape Shape;
-    public Color Color;
-    public State state;
-    public int row,col;
+import java.util.ArrayList;
 
-    public Tile(Color color, Shape shape) {
-        this.Color = color;
+public class Tile {
+    public enum Colour{ PURPLE,BLUE,GREEN,YELLOW,ORANGE,RED}
+
+    public enum Shape{  SQUARE, CIRCLE, STAR, DIAMOND, CROSS, CLUB;}
+
+    public enum State{ IN_HAND,PLACED,PLACING,IN_BAG,SWAPPING;
+    }
+
+    public int col,row;
+    public Shape Shape;
+    public Colour Colour;
+    public State state;
+    public ArrayList<Tile> verticalLine = new ArrayList<>();
+    public ArrayList<Tile> horizontalLine = new ArrayList<>();
+    public boolean isSelected = false;
+    public boolean checkNS = false;
+    public boolean checkEW = false;
+    public boolean counted = false;
+    public boolean swapped = false;
+
+    public boolean isSwapped() {
+        return swapped;
+    }
+
+    public void setSwapped(boolean swapped) {
+        this.swapped = swapped;
+    }
+
+    public Tile(Colour colour, Shape shape){
+        this.Colour = colour;
         this.Shape = shape;
     }
 
-    public enum Shape {
-        square(1), circle(2), star(3), diamond(4), cross(5), club(6);
-
-        public int code;
-
-        Shape(int i) {
-            this.code = i;
-        }
+    public void setCounted(boolean counted) {
+        this.counted = counted;
     }
 
-    public enum Color {
-        blue(1), green(2), red(3), yellow(4), purple(5), orange(6);
-
-        public int code;
-
-        Color(int i) {
-            this.code = i;
-        }
+    public boolean isCounted() {
+        return counted;
     }
 
-    public enum State {
-        swapping(1), placing(2), inBag(3), inHand(4),onBoard(5);
-
-        public int code;
-
-        State(int i) {
-            this.code = i;
-        }
-    }
-    public Shape getShape() {
-        return Shape;
-    }
-
-    public Color getColor() {
-        return Color;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
+    public int getCol() {
+        return col;
     }
 
     public void setCol(int col) {
         this.col = col;
     }
 
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public Tile.Shape getShape() {
+        return Shape;
+    }
+
+    public void setShape(Tile.Shape shape) {
+        Shape = shape;
+    }
+
+    public Tile.Colour getColour() {
+        return Colour;
+    }
+
+    public void setColour(Tile.Colour colour) {
+        Colour = colour;
+    }
+
+    public State getState() {
+        return state;
+    }
+
     public void setState(State state) {
         this.state = state;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public void setLinesToNull() {
+        horizontalLine = null;
+        verticalLine = null;
     }
 }

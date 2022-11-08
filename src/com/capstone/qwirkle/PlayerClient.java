@@ -53,6 +53,7 @@ public class PlayerClient {
                 Message message;
                 do {
                     message = (Message) in.readObject();
+
                     message.applyLogic(PlayerClient.this);
                     System.out.println(username + "------>" + message);
                 } while (message.getClass() != Quit.class);
@@ -68,7 +69,6 @@ public class PlayerClient {
         public void run() {
             System.out.println("Writing thread started running");
             writeThread = this;
-
             try {
                 while (!interrupted()) {
                     Message message = outgoingMessages.take();
