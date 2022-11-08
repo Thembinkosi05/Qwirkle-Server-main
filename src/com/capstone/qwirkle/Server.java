@@ -17,7 +17,7 @@ public class Server {
         try {
             serverSocket=new ServerSocket(5050);
             System.out.println("Server started on "+ InetAddress.getLocalHost().getHostAddress());
-            GameLobbies.addLobby(1);
+           // GameLobbies.addLobby(1);
             while (!serverSocket.isClosed()){
                 Socket clientSocket=serverSocket.accept();
                 counter++;

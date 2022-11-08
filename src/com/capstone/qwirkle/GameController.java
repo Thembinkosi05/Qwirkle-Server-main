@@ -1,9 +1,5 @@
 package com.capstone.qwirkle;
 
-import android.app.Activity;
-import android.graphics.Point;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.capstone.qwirkle.models.Player;
 import com.capstone.qwirkle.models.Tile;
@@ -11,6 +7,7 @@ import com.capstone.qwirkle.models.Tile.Shape;
 import com.capstone.qwirkle.models.Tile.Colour;
 import com.capstone.qwirkle.models.Tile.State;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +22,7 @@ public class GameController implements Serializable {
     private ArrayList<Tile> GameBoard = new ArrayList<>();
     private ArrayList<Player> players = new ArrayList<>();
     private static final ReentrantLock lock = new ReentrantLock();
-    private Integer gameID;
+    private String gameID;
     public boolean isReady;
     public int playerTotal = 0;
     public static int curPlayerNo = 0;
@@ -63,20 +60,22 @@ public class GameController implements Serializable {
         }
     }
 
-    public GameController(int playerTotal) {
-        this.playerTotal=playerTotal;
+    public GameController(String gameID) {
+
+        this.gameID =gameID;
         isReady=false;
         initialAllTiles();
-        addPlayers(playerTotal);
+        //addPlayers(playerTotal);
     }
 
+/*
     private void addPlayers(int playerTotal) {
         for(int i =0;i<playerTotal;i++){
             addPlayer(i+1);
         }
         setCurrentPlayer(players.get(0));
     }
-
+*/
 
     /**
      * create all available tiles and add to the bag
@@ -109,6 +108,7 @@ public class GameController implements Serializable {
         }
     }
 
+    /*
     private void createPlayersHand(int playerNo) {
         Random r = new Random();
         for (int i = 0; i < playerNo; i++) {
@@ -124,7 +124,7 @@ public class GameController implements Serializable {
             players.add(player);
         }
     }
-
+*/
     private ArrayList<Tile> createPlayerHand() {
         ArrayList<Tile> hand = new ArrayList<>();
         Random r = new Random();
@@ -232,30 +232,11 @@ public class GameController implements Serializable {
     }
 
     private boolean isValidLine(ArrayList<Tile> line, boolean isSameShape) {
-        /**Is same shape will take the first 2 elements in the  line and compare
-         * their shapes to see if they are equal.
-         * If this is true See ROUTE 1...
-         * If this is false See ROUTE 2
-         *
-         * ROUTE 1
-         * Get the type of shape of the line.#
-         * Instantiate an array of type boolean for a maximum of 6
-         *    This array will serve to check if there is indeed a
-         *    line containing different colors.#
-         * Next we need to iterate through the line of QwirkleTiles
-         * extract the color and mark true in the boolean array index
-         * that matches the ordinal position of the enum color
-         *
-         * ROUTE 2
-         * The line is not the same shape so make sure that there are
-         * different shapes but the same color using the same process as above
-         * **/
-
         if (isSameShape) {
-            Shape animal1 = line.get(0).getShape();
+            Shape shape1 = line.get(0).getShape();
             boolean[] differentColors = new boolean[6];
             for (Tile tile : line) {
-                if (!tile.getShape().equals(animal1)) {
+                if (!tile.getShape().equals(shape1)) {
                     return false;
                 }
 
@@ -378,10 +359,10 @@ public class GameController implements Serializable {
         }
     }
 
-    public Player addPlayer(int playerNo) {
+    public Player addPlayer(String PlayerName) {
         if (bag.size() < 6) return null;
-        Player player = new Player(createPlayerHand(),playerNo);
-//        player.setGameID(gameID);
+        Player player = new Player(createPlayerHand(),PlayerName);
+//      player.setGameID(gameID);
         players.add(player);
         if(players.size()==playerTotal)isReady=true;
         if (players.size() == 1) curPlayer = players.get(0);
@@ -446,7 +427,6 @@ public class GameController implements Serializable {
         horizontalLine =new ArrayList<>();
         for (Tile tile : tiles){
             if(tile.getState().equals(State.PLACING)){
-                Log.d("score", "IS BEING CALCULATED");
                 int i = 0;
                 //vertical up
                 while(getTileAt(tile.getRow()-i, tile.getCol(), tiles)!=null){
@@ -513,9 +493,9 @@ public class GameController implements Serializable {
         return null;
     }
 
-    public void setGameID(int gamesIndex){
+   /* public void setGameID(int gamesIndex){
         gameID=gamesIndex;
-    }
+    }*/
 
     public void setPlayers(ArrayList<Player> players) {
         this.players = players;

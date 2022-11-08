@@ -20,11 +20,10 @@ public class Player implements Serializable {
         this.swapping = swapping;
     }
 
-    public Player(ArrayList<Tile> hand, int playerNo) {
-        //this.username=username;
+    public Player(ArrayList<Tile> hand, String username) {
+        this.username=username;
         points = 0;
         this.hand = hand;
-        this.playerNo = playerNo;
     }
     public boolean isPlacing() {
         return placing;

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -30,14 +31,13 @@ public class PlayerClient {
     String username;
 
 
-    public PlayerClient(Socket socket,int Username) {
+    public PlayerClient(Socket socket,int username) {
         this.socket=socket;
         readThread=new ReadingThread();
         readThread.start();
        // GameController.addClient(this);
-        System.out.println(new Joined(username));
+       // System.out.println(new Joined(username));
     }
-
 
     public class ReadingThread extends Thread{
         @Override
