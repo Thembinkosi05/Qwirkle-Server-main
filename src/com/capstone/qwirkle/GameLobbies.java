@@ -3,6 +3,7 @@ package com.capstone.qwirkle;
 import com.capstone.qwirkle.messages.Message;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,31 @@ public class GameLobbies {
     private static PubSubBroker broker = PubSubBroker.getInstance();
 
     private static final ReentrantLock lock = new ReentrantLock();
+    private final Map<String, GameController> lobbies;
+
+    // Made private so only can be called by self.
+    public GameLobbies() {
+        lobbies = new ConcurrentHashMap<>(); //Use thread-safe Map
+    }
+
+    public Map<String,GameController> getLobbies(){
+        return lobbies;
+    }
+
+    public static String generateLobbyID() {
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        Random ran = new Random();
+        int startIdx = ran.nextInt(uuid.length() - 5);
+        uuid = uuid.substring(startIdx, startIdx + 5);
+        return uuid.toUpperCase();
+    }
+
+    public GameController getLobby(String lobbyID){
+        if(!lobbies.containsKey(lobbyID)) return null;
+        return lobbies.get(lobbyID);
+    }
+
+
 /*
     //unique lobbyID -> {Players}
     public static final Map<String, Lobby> lobbies = new HashMap<>();

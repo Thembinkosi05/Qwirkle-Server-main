@@ -1,6 +1,7 @@
 package com.capstone.qwirkle;
 
 
+import com.capstone.qwirkle.messages.Message;
 import com.capstone.qwirkle.models.Player;
 import com.capstone.qwirkle.models.Tile;
 import com.capstone.qwirkle.models.Tile.Shape;
@@ -21,6 +22,7 @@ public class GameController implements Serializable {
     private ArrayList<Tile> bag = new ArrayList<>();
     private ArrayList<Tile> GameBoard = new ArrayList<>();
     private ArrayList<Player> players = new ArrayList<>();
+    private static ArrayList<PlayerClient> clients;
     private static final ReentrantLock lock = new ReentrantLock();
     private String gameID;
     public boolean isReady;
@@ -35,6 +37,16 @@ public class GameController implements Serializable {
     public static final char BELOW = 'B';
     public static final char LEFT = 'L';
     public static final char RIGHT = 'R';
+
+    public void addClient(PlayerClient playerClient) {
+        players.add(playerClient.getPlayer());
+        clients.add(playerClient);
+    }
+
+    public void startGame() {
+        Random random = new Random();
+
+    }
 
     private enum Direction {
         NORTH(0, -1),
@@ -65,6 +77,7 @@ public class GameController implements Serializable {
         this.gameID =gameID;
         isReady=false;
         initialAllTiles();
+        clients = new ArrayList<>();
         //addPlayers(playerTotal);
     }
 
@@ -158,7 +171,6 @@ public class GameController implements Serializable {
         }
         return false;
     }
-
 
     //check to see if the intended move is valid or not
     public boolean isValidMove(int x, int y, Tile tile, ArrayList<Tile> board) {
@@ -359,9 +371,9 @@ public class GameController implements Serializable {
         }
     }
 
-    public Player addPlayer(String PlayerName) {
+    public Player addPlayer() {
         if (bag.size() < 6) return null;
-        Player player = new Player(createPlayerHand(),PlayerName);
+        Player player = new Player();
 //      player.setGameID(gameID);
         players.add(player);
         if(players.size()==playerTotal)isReady=true;
@@ -527,74 +539,19 @@ public class GameController implements Serializable {
         curPlayer.setSwapping(false);
     }
 
-    public Tile[] getLine(int row, int column, char direction) {
-        // Returns the line formed above, below, left or right of the indicated
-        // position.
-        // Blank tiles are returned as null objects.
-        Tile[] line = new Tile[6];
-
-        for (int i = 0; i < line.length; i++) {
-            Tile temp = null;
-            switch (direction) {
-                case ABOVE:
-                    temp = getTileAt(row - 1 - i, column,getGameBoard());
-                    break;
-                case BELOW:
-                    temp = getTileAt(row + 1 + i, column,getGameBoard());
-                    break;
-                case LEFT:
-                    temp = getTileAt(row, column - 1 - i,getGameBoard());
-                    break;
-                case RIGHT:
-                    temp = getTileAt(row, column + 1 + i,getGameBoard());
-                    break;
-            }
-            if (temp != null) // do not include blank tiles
-                line[i] = temp;
-            else // stop at the first blank space
-                break;
-        }
-        return line;
+    public static void send(PlayerClient client,Message message) {
+        lock.lock();
+        // Send message to player.
+        client.sendMessage(message);
+        lock.unlock();
     }
 
-    private int determineScore(Tile tileInPlay) {
-        int score = 1;
-        // get the location on the board of the tileholder that is being considered
-        int row = tileInPlay.getRow();
-        int column = tileInPlay.getCol();
-
-        // get need all surrounding tiles
-        Tile[] tilesAbove = getLine(row, column, ABOVE);
-        Tile[] tilesBelow = getLine(row, column, BELOW);
-        Tile[] tilesLeft = getLine(row, column, LEFT);
-        Tile[] tilesRight = getLine(row, column, RIGHT);
-
-        Tile[][] surrounding = { tilesAbove, tilesBelow, tilesLeft, tilesRight };
-
-        // see how many tiles are already in the rows that are attached.
-        for (int i = 0; i < surrounding.length; i++) {
-            for (int j = 0; j < surrounding[i].length; j++) {
-                if (surrounding[i][j] != null) score += 1;
-                else // stop counting once a null tile is found
-                    break;
-            }
+    public static void sendAll(Message message) {
+        lock.lock();
+        // Send message to each client.
+        for(PlayerClient c : clients ) {
+            c.sendMessage(message);
         }
-
-        int quirkleCount = 0;
-
-        // check for a Qwirkle
-        for (int i = 0; i < surrounding.length; i++) {
-            for (int j = 0; j < surrounding[i].length; j++) {
-                if (surrounding[i][j] != null) quirkleCount++;
-                else // stop counting once a null tile is found
-                    break;
-            }
-
-            if (quirkleCount == 5) score += 6;
-
-            quirkleCount = 0;
-        }
-
-        return score;
+        lock.unlock();
     }
 }

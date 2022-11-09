@@ -2,14 +2,12 @@ package com.capstone.qwirkle;
 
 import com.capstone.qwirkle.messages.Message;
 import com.capstone.qwirkle.models.Player;
-import com.capstone.qwirkle.messages.server.*;
 import com.capstone.qwirkle.messages.client.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -28,15 +26,21 @@ public class PlayerClient {
 
     //details about the current connection's client
     Player player = null;
-    String username;
+    public String handle;
 
 
-    public PlayerClient(Socket socket,int username) {
+    public PlayerClient(Socket socket) {
         this.socket=socket;
         readThread=new ReadingThread();
         readThread.start();
-       // GameController.addClient(this);
-       // System.out.println(new Joined(username));
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     public class ReadingThread extends Thread{
@@ -53,12 +57,11 @@ public class PlayerClient {
                 Message message;
                 do {
                     message = (Message) in.readObject();
-
                     message.applyLogic(PlayerClient.this);
-                    System.out.println(username + "------>" + message);
+
                 } while (message.getClass() != Quit.class);
             } catch (Exception e) {
-                System.out.println("ReadingThread error:" + e.getMessage() + "for" + username);
+                System.out.println("ReadingThread error:" + e.getMessage() + "for" + handle);
                 e.printStackTrace();
             }
         }
@@ -72,11 +75,12 @@ public class PlayerClient {
             try {
                 while (!interrupted()) {
                     Message message = outgoingMessages.take();
+                    System.out.println(message);
                     out.writeObject(message);
                     out.flush();
                 }
             } catch (Exception e) {
-                System.out.println("WriteThread error:" + e.getMessage() + "for" + username);
+                System.out.println("WriteThread error:" + e.getMessage() + "for" + handle);
                 e.printStackTrace();
             }
         }

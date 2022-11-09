@@ -5,12 +5,18 @@ import java.util.ArrayList;
 
 public class Player implements Serializable {
     private ArrayList<Tile> hand;
-    public String username;
+    public String username= "0";
     public int points;
-    private int gameID;
+    private String gameID;
     public  int playerNo;
     public boolean swapping =false; //is player currently swapping
     public boolean placing = false; //is player currently placing
+
+
+
+    public Player() {
+        points = 0;
+    }
 
     public boolean isSwapping() {
         return swapping;
@@ -19,12 +25,14 @@ public class Player implements Serializable {
     public void setSwapping(boolean swapping) {
         this.swapping = swapping;
     }
-
-    public Player(ArrayList<Tile> hand, String username) {
-        this.username=username;
-        points = 0;
-        this.hand = hand;
+    public String getUsername() {
+        return username;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public boolean isPlacing() {
         return placing;
     }
@@ -37,7 +45,7 @@ public class Player implements Serializable {
         return playerNo;
     }
 
-    public void setGameID(int gameID) {
+    public void setGameID(String gameID) {
         this.gameID = gameID;
     }
 
@@ -49,7 +57,7 @@ public class Player implements Serializable {
         this.hand = hand;
     }
 
-    public int getGameID() {
+    public String getGameID() {
         return gameID;
     }
 
