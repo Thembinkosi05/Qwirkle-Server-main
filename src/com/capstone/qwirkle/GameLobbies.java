@@ -1,6 +1,7 @@
 package com.capstone.qwirkle;
 
 import com.capstone.qwirkle.messages.Message;
+import com.capstone.qwirkle.messages.server.GameStarted;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,11 +12,9 @@ public class GameLobbies {
     private static PubSubBroker broker = PubSubBroker.getInstance();
 
     private static final ReentrantLock lock = new ReentrantLock();
-    private final Map<String, GameController> lobbies;
+    private static final Map<String, GameController> lobbies = new ConcurrentHashMap<>(); //Use thread-safe Map
 
-    // Made private so only can be called by self.
     public GameLobbies() {
-        lobbies = new ConcurrentHashMap<>(); //Use thread-safe Map
     }
 
     public Map<String,GameController> getLobbies(){
@@ -33,6 +32,20 @@ public class GameLobbies {
     public GameController getLobby(String lobbyID){
         if(!lobbies.containsKey(lobbyID)) return null;
         return lobbies.get(lobbyID);
+    }
+
+    public static void startGame(String gameID) {
+
+        //lock.lock();
+        GameController gameController = lobbies.get(gameID);
+        gameController.createPlayersHand();
+        Random ran = new Random();
+        int pos = ran.nextInt(gameController.getPlayers().size());
+        gameController.setCurrentPlayer(gameController.getPlayers().get(pos));
+        GameController.sendAll(new GameStarted(gameController.getPlayers().get(pos)));
+        System.out.println("bag size:"+gameController.getBag().size());
+        System.out.println("player size: "+gameController.getPlayers().size());
+       // lock.unlock();
     }
 
 

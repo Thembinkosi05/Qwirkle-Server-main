@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Player implements Serializable {
+    private static final long serialVersionUID = 71L;
     private ArrayList<Tile> hand;
     public String username= "0";
     public int points;

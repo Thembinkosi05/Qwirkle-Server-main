@@ -22,6 +22,6 @@ public class Join extends Message<PlayerClient> {
        //GameController.addClient(playerClient);
 
         playerClient.handle = username;
-        GameController.send(new Joined(playerClient.handle));
+        GameController.sendAll(new Joined(playerClient.handle));
     }
 }

@@ -2,6 +2,7 @@ package com.capstone.qwirkle;
 
 
 import com.capstone.qwirkle.messages.Message;
+import com.capstone.qwirkle.messages.server.GameStarted;
 import com.capstone.qwirkle.models.Player;
 import com.capstone.qwirkle.models.Tile;
 import com.capstone.qwirkle.models.Tile.Shape;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameController implements Serializable {
+    //private static final long serialVersionUID = 73L;
 
     private ArrayList<Tile> bag = new ArrayList<>();
     private ArrayList<Tile> GameBoard = new ArrayList<>();
@@ -33,19 +35,23 @@ public class GameController implements Serializable {
     ArrayList<Tile> verticalLine; //the line north and south.
     ArrayList<Tile> horizontalLine; //the line east and west.
 
-    public static final char ABOVE = 'A';
-    public static final char BELOW = 'B';
-    public static final char LEFT = 'L';
-    public static final char RIGHT = 'R';
-
     public void addClient(PlayerClient playerClient) {
         players.add(playerClient.getPlayer());
         clients.add(playerClient);
     }
 
-    public void startGame() {
-        Random random = new Random();
+    public String getGameID() {
+        return gameID;
+    }
 
+    public void startGame() {
+        createPlayersHand();
+        Random ran = new Random();
+        int pos = ran.nextInt(players.size());
+        setCurrentPlayer(players.get(pos));
+        sendAll(new GameStarted(players.get(pos)));
+        System.out.println("bag size:"+getBag().size());
+        System.out.println("player size: "+players.size());
     }
 
     private enum Direction {
@@ -78,7 +84,6 @@ public class GameController implements Serializable {
         isReady=false;
         initialAllTiles();
         clients = new ArrayList<>();
-        //addPlayers(playerTotal);
     }
 
 /*
@@ -121,10 +126,9 @@ public class GameController implements Serializable {
         }
     }
 
-    /*
-    private void createPlayersHand(int playerNo) {
+    public void createPlayersHand() {
         Random r = new Random();
-        for (int i = 0; i < playerNo; i++) {
+        for (Player player : players) {
             ArrayList<Tile> hand = new ArrayList<>();
             for (int x = 0; x < 6; x++) {
                 int randomPos = r.nextInt(bag.size());
@@ -133,11 +137,12 @@ public class GameController implements Serializable {
                 hand.add(randomPiece);
                 randomPiece.setState(Tile.State.IN_HAND);
             }
-            Player player = new Player(hand, playerNo);
-            players.add(player);
+            player.setHand(hand);
+           // Player player = new Player(hand, playerNo);
+           // players.add(player);
         }
     }
-*/
+
     private ArrayList<Tile> createPlayerHand() {
         ArrayList<Tile> hand = new ArrayList<>();
         Random r = new Random();
@@ -401,7 +406,7 @@ public class GameController implements Serializable {
     int getPoints(ArrayList<Tile> tiles) {
         int points = 0;
         for (Tile tile : tiles) {
-
+            tile.setState(State.PLACED);
             if (tile.verticalLine.size() == 1 && tile.horizontalLine.size() == 1) points += 1;
 
             if (tile.verticalLine.size() > 1) {

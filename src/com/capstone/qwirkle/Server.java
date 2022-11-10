@@ -13,7 +13,8 @@ public class Server {
     private ServerSocket serverSocket;
     Timer timer;
     int counter;
-    String gameID;
+    String gameID ="game";
+    int lobbyNum = 1;
     GameLobbies gameLobbies;
     GameController curGameController;
     public Server() {
@@ -45,18 +46,20 @@ public class Server {
                 }*/
 
                 if(counter==1){
-                    gameID ="sss";
+                    gameID = gameID+lobbyNum;
                     gameLobbies.getLobbies().put(gameID,new GameController(gameID)); //new game created
+                    lobbyNum++;
                     curGameController = gameLobbies.getLobby(gameID);
                 }
                 Player player = new Player();
                 player.setGameID(gameID);
                 playerClient.setPlayer(player);
                 curGameController.addClient(playerClient);
-
+                GameLobbies.startGame(gameID);
+                //gameID ="game";
                 //if two or more players have joined and 30 sec has elapsed
                 if(counter==2){
-                    curGameController.startGame();
+                   // curGameController.startGame();
                     counter=0;
                 }
             }
